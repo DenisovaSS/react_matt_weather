@@ -1,19 +1,21 @@
 import React, { useState } from "react";
 import "./Weather.css";
 import axios from "axios";
+import FormatDate from "./FormatDate";
 
-export default function Weather() {
+export default function Weather(props) {
   //const [ready, setReady] = useState(false);
   const [weatherData, setWeatherData] = useState({ ready: false });
 
   function showTemperature(response) {
-    //console.log(response.data);
+    console.log(response.data);
     setWeatherData({
       temperature: response.data.main.temp,
       description: response.data.weather[0].main,
       humidity: Math.round(response.data.main.humidity),
       wind: Math.round(response.data.wind.speed),
       city: response.data.name,
+      date: new Date(response.data.dt * 1000),
       icon: response.data.weather[0].icon,
       ready: true,
     });
@@ -44,7 +46,10 @@ export default function Weather() {
         </form>
         <h1>{weatherData.city}</h1>
         <ul>
-          <li>Wensday 07:00</li>
+          <li>
+            <FormatDate date={weatherData.date} />
+          </li>
+
           <li>{weatherData.description}</li>
         </ul>
         <div className="row">
@@ -71,7 +76,7 @@ export default function Weather() {
     );
   } else {
     const apiKey = "9c340174dce0d0c11428fd78107dfdf3";
-    let city = "Dnipro";
+    let city = props.searchCity;
     let units = "metric";
     // let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
     let apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=${units}`;
